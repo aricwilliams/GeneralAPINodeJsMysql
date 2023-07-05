@@ -1,0 +1,150 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "BETA",
+    "title": "Roomie Haven API",
+    "description": "This is the API for Roomie Haven. It is a RESTful API that allows users to add, edit, and delete listings."
+  },
+  "host": "localhost:3000",
+  "basePath": "/listings",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/getalllistings": {
+      "get": {
+        "description": "",
+        "parameters": [
+         
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/getonelisting/{id}": {
+      "get": {
+        "description": "Get one listing",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/addlisting": {
+      "post": {
+        "summary": "Add a listing",
+        "parameters": [
+          {
+            "name": "address",
+            "in": "formData",
+            "description": "Address of the listing",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "beds",
+            "in": "formData",
+            "description": "Number of bedrooms",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "baths",
+            "in": "formData",
+            "description": "Number of bathrooms",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "description": "Price of the listing",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },    
+    "/editlisting/{id}": {
+      "put": {
+        "summary": "Update a listing",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "address",
+            "in": "formData",
+            "description": "Address of the listing",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "beds",
+            "in": "formData",
+            "description": "Number of bedrooms",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "baths",
+            "in": "formData",
+            "description": "Number of bathrooms",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "description": "Price of the listing",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },    
+    "/deletelisting/{id}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}
