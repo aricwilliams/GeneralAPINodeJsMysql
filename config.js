@@ -4,7 +4,7 @@ const config = {
     host: "localhost",
     user: "root",
     password: "Meettheblacks4",
-    database: "roomiehaven",
+    database: "autotubeguru",
   },
   listPerPage: 10,
 };

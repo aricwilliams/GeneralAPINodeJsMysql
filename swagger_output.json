@@ -1,22 +1,28 @@
 {
   "swagger": "2.0",
   "info": {
-    "version": "BETA",
-    "title": "Roomie Haven API",
-    "description": "This is the API for Roomie Haven. It is a RESTful API that allows users to add, edit, and delete listings."
+    "version": "V1.0.0",
+    "title": "Auto Tube Guru API",
+    "description": "I need to get the response from Youtube and Submit to my database, so all the calls come from my server, not the client."
   },
-  "host": "localhost:3000",
+  "host": "localhost:3001",
   "basePath": "/listings",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
+    "/getapikey": {
+      "get": {
+        "summary": "Get the next available API key",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },    
     "/getalllistings": {
       "get": {
         "description": "",
-        "parameters": [
-         
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -81,7 +87,7 @@
           }
         }
       }
-    },    
+    },
     "/editlisting/{id}": {
       "put": {
         "summary": "Update a listing",
@@ -127,7 +133,41 @@
           }
         }
       }
-    },    
+    },
+    "/updateapikey": {
+      "put": {
+        "summary": "Update API Key",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "description": "ID of the API key",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "apiKey",
+            "in": "formData",
+            "description": "New API key value",
+            "required": false,
+            "type": "string"
+          },
+     
+          {
+            "name": "userCalled",
+            "in": "formData",
+            "description": "Number of times the API key has been called by users",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/deletelisting/{id}": {
       "delete": {
         "description": "",

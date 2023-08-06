@@ -4,6 +4,79 @@ const listings = require("../services/middleLayer");
 
 /**
  * @swagger
+ * /listings/getapikey:
+ *   get:
+ *     summary: Get the next available API key
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ */
+router.get("/getapikey", async function (req, res, next) {
+  try {
+    // Add your code for fetching the next available API key here
+    const nextApiKey = await listings.getNextApiKey();
+    // Check if the retrieved apiKey is null or undefined
+    if (nextApiKey === null || nextApiKey === undefined) {
+      res.status(404).json({ message: "No more resources to make this call." });
+    } else {
+      // Update userCalled for the retrieved apiKey
+      await listings.increaseUserCalled(nextApiKey.id);
+
+      // Check if userCalled is 99, then fetch the next apiKey and update it recursively
+      if (nextApiKey.userCalled === 99) {
+        await updateNextApiKey(nextApiKey.id);
+      }
+      const searchResults = await listings.getYoutubeSearch(
+        nextApiKey.apiKey,
+        "How to get abs"
+      );
+      if (!searchResults || !searchResults.searchResults) {
+        res.status(404).json({ message: "No data" });
+      }
+
+      const resultsWithChannelIds = await Promise.all(
+        searchResults.searchResults.map(async (item) => {
+          const channelId = item.snippet.channelId;
+          const subCount = await listings.getSubCount(
+            channelId,
+            nextApiKey.apiKey
+          );
+          return {
+            channelId: channelId,
+            subCount: subCount,
+            result: item,
+          };
+        })
+      );
+
+      res.json(resultsWithChannelIds);
+    }
+  } catch (err) {
+    console.error(
+      `Error while getting the next available API key`,
+      err.message
+    );
+    next(err);
+  }
+});
+
+// Helper function to recursively update the next apiKey if userCalled is 99
+async function updateNextApiKey(id) {
+  alert(id);
+  const nextApiKey = await listings.getNextApiKey(id);
+  if (nextApiKey === null || nextApiKey === undefined) {
+    return; // No more resources to make this call
+  }
+
+  await listings.increaseUserCalled(nextApiKey.id);
+
+  if (nextApiKey.userCalled === 99) {
+    await updateNextApiKey(nextApiKey.id);
+  }
+}
+
+/**
+ * @swagger
  * /listings/getalllistings:
  *   get:
  *     summary: Get programming languages
@@ -82,7 +155,43 @@ router.post("/addlisting", async function (req, res, next) {
     next(err);
   }
 });
-
+/**
+ * @swagger
+ * /listings/updateapikey:
+ *   put:
+ *     summary: Update API Key
+ *     parameters:
+ *       - in: body
+ *         name: apiKeyData
+ *         description: API Key data object
+ *         schema:
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: integer
+ *             apiKey:
+ *               type: string
+ *             createdAt:
+ *               type: string
+ *             userCalled:
+ *               type: integer
+ *             timeUsed:
+ *               type: integer
+ *             timeUsedEnd:
+ *               type: string
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ */
+router.put("/updateapikey", async function (req, res, next) {
+  try {
+    const { id, apiKey, userCalled } = req.body;
+    res.json(await listings.updateApiKey(id, apiKey, userCalled));
+  } catch (err) {
+    console.error(`Error while updating API key`, err.message);
+    next(err);
+  }
+});
 /**
  * @swagger
  * /listings/editlisting/{id}:
