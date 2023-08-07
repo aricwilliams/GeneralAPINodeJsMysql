@@ -8,7 +8,7 @@ async function getApiKey(req, res) {
     const sql = `
       SELECT apiKey, userCalled
       FROM autotubeguru.apikey
-      WHERE userCalled < 99
+      WHERE userCalled < 96
       ORDER BY userCalled ASC
       LIMIT 1
     `;
@@ -84,18 +84,42 @@ async function increaseUserCalled(id) {
   try {
     // Fetch the current userCalled count from the database
     const currentApiKey = await db.query(
-      `SELECT userCalled FROM autotubeguru.apikey WHERE id = ?`,
+      `SELECT userCalled,lastResetTimestamp FROM autotubeguru.apikey WHERE id = ?`,
       [id]
     );
 
     // Increment the userCalled count by one
     const updatedUserCalled = currentApiKey[0].userCalled + 1;
+    const lastResetTimestamp = currentApiKey[0].lastResetTimestamp;
+    const currentTime = new Date();
+    const timeDifference = currentTime - lastResetTimestamp;
+    const twentyFourHours = 24 * 60 * 60 * 1000;
+    const fiveMinutes = 5 * 60 * 1000;
 
     // Update the userCalled count in the database
     await db.query(
       `UPDATE autotubeguru.apikey SET userCalled = ? WHERE id = ?`,
       [updatedUserCalled, id]
     );
+
+    if (timeDifference >= fiveMinutes) {
+      const updatedUserCalled0 = 1; // Corrected the assignment here
+      const updateSqlUserCalled = `
+        UPDATE autotubeguru.apiKey
+        SET userCalled = ?, 
+        lastResetTimestamp = ? 
+        WHERE id = ?
+        `;
+      await db.query(updateSqlUserCalled, [
+        updatedUserCalled0,
+        currentTime,
+        id,
+      ]);
+
+      console.log("Value reset to zero!");
+    } else {
+      console.log("Not yet time to reset the value.");
+    }
 
     return updatedUserCalled;
   } catch (err) {

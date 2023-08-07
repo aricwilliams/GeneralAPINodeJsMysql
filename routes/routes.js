@@ -11,7 +11,7 @@ const listings = require("../services/middleLayer");
  *       '200':
  *         description: Successful response
  */
-router.get("/getapikey", async function (req, res, next) {
+router.get("/getapikey/:search", async function (req, res, next) {
   try {
     // Add your code for fetching the next available API key here
     const nextApiKey = await listings.getNextApiKey();
@@ -28,7 +28,7 @@ router.get("/getapikey", async function (req, res, next) {
       }
       const searchResults = await listings.getYoutubeSearch(
         nextApiKey.apiKey,
-        "How to get abs"
+        req.params.search
       );
       if (!searchResults || !searchResults.searchResults) {
         res.status(404).json({ message: "No data" });

@@ -9,9 +9,17 @@
   "basePath": "/listings",
   "schemes": ["http"],
   "paths": {
-    "/getapikey": {
+    "/getapikey/{search}": {
       "get": {
         "summary": "Get the next available API key",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
